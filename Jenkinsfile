@@ -21,5 +21,10 @@ pipeline{
                 }
             }
         }
+        stage ('post_action') {
+            steps {
+                echo "success"
+            }
+        }
     }
 }
