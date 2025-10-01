@@ -1,10 +1,9 @@
 Pipeline {
     agent any
     Stages {
-        Satge ('checkout') {
+        Stage ('checkout') {
             Steps {
-                pwd
-                ls -lrt
+                git branch: 'main', credentialsId: 'Github_ArunsPAT', url: 'https://github.com/arunsbk/Jenkins_test.git'
             }
         }
             parallel {
