@@ -5,6 +5,7 @@ pipeline{
                 git branch: 'main', credentialsId: 'Github_ArunsPAT', url: 'https://github.com/arunsbk/Jenkins_test.git'
             }
         }
+        stage ('build') {
         parallel {
             stage ('A') {
                 steps {
@@ -17,5 +18,5 @@ pipeline{
                 }   
             }
         }
-    }
+        }
 }
