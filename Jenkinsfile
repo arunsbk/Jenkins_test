@@ -1,30 +1,46 @@
-pipeline{
+pipeline {
     agent any
+
+    environment {
+        DOCKERHUB_CREDENTIALS = credentials('Dockerhub_cred')
+        IMAGE_NAME = "arunsbk/myapp"
+    }
+
     stages {
-        stage ('checkout') {
+        stage('Checkout') {
             steps {
-                git branch: 'main', credentialsId: 'Github_ArunsPAT', 
-                url: 'https://github.com/arunsbk/Jenkins_test.git'
+                git branch: 'main', url: 'https://github.com/yourusername/yourrepo.git'
             }
         }
-        stage ('build') {
-            parallel {
-                stage ('A') {
-                    steps {
-                        echo "1st parallel stage"
-                    }  
-                }
-                stage ('B') {
-                    steps {
-                        echo "2nd parallel stage"
-                    }   
-                }
+
+        stage('Build Docker Image') {
+            steps {
+                sh '''
+                docker build -t $IMAGE_NAME:latest .
+                '''
             }
         }
-        stage ('post_action') {
+
+        stage('Login to Docker Hub') {
             steps {
-                echo "success"
+                sh '''
+                echo "$DOCKERHUB_CREDENTIALS_PSW" | docker login -u "$DOCKERHUB_CREDENTIALS_USR" --password-stdin
+                '''
             }
+        }
+
+        stage('Push to Docker Hub') {
+            steps {
+                sh '''
+                docker push $IMAGE_NAME:latest
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker logout'
         }
     }
 }
